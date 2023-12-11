@@ -4,7 +4,7 @@
       图层树
     </div>
     <div class="layout-tree-body">
-      <TreeNode v-for="item in DesignStore.list"
+      <TreeNode v-for="item in designStore.list"
                 :item="item"
                 :controller-map="controllerMap">
       </TreeNode>
@@ -13,29 +13,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {DesignStore} from "../../DesignStore";
 import TreeNode from "./TreeNode.vue";
+import {useDesignStore} from "../../useDesignStore.js";
+import {reactive} from "vue";
 
-export default {
-  name: "layoutTree",
-  components: {TreeNode},
-  props: ['designGroup'],
-  data() {
-    return {
-      DesignStore,
-      controllerMap: {}
+const props = defineProps(['designGroup']);
+
+const {designStore} = useDesignStore();
+const controllerMap = reactive({});
+if (props.designGroup) {
+  for (let group of props.designGroup) {
+    for (let controller of group.controllers) {
+      controllerMap[controller._compType] = controller;
     }
-  },
-  created() {
-    if (this.designGroup) {
-      for (let group of this.designGroup) {
-        for (let controller of group.controllers) {
-          this.controllerMap[controller._compType] = controller;
-        }
-      }
-    }
-    console.log("controllerNameMap:", this.controllerMap);
   }
 }
 </script>

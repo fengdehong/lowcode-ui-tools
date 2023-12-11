@@ -28,7 +28,6 @@
                     <ElIcon v-if="element._compIcon.elIcon">
                       <component :is="element._compIcon.elIcon"/>
                     </ElIcon>
-
                     <i v-else :class="element._compIcon"/>
                     {{ element._compName }}
                   </div>

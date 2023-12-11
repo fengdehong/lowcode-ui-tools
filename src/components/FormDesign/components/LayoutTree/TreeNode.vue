@@ -1,10 +1,14 @@
 <template>
-  <div class="tree-node" :class="{'is-active':item===DesignStore.activeItem,'is-hover':item===DesignStore.hoverItem}"
-       @click.stop="DesignStore.setActiveItem(item)"
-       @mouseenter.stop="DesignStore.setHoverItem(item)"
-       @mouseleave.stop="DesignStore.setHoverItem({})">
+  <div class="tree-node" :class="{'is-active':item===designStore.activeItem,'is-hover':item===designStore.hoverItem}"
+       @click.stop="designStore.setActiveItem(item)"
+       @mouseenter.stop="designStore.setHoverItem(item)"
+       @mouseleave.stop="designStore.setHoverItem({})">
     <div class="tree-node__label">
-      <i :class="'iconfont '+controllerMap[item.compType]._compIcon"/>{{ controllerMap[item.compType]._compName }}
+      <ElIcon v-if="controllerMap[item.compType]._compIcon.elIcon">
+        <component :is="controllerMap[item.compType]._compIcon.elIcon"/>
+      </ElIcon>
+      <i v-else :class="'iconfont '+controllerMap[item.compType]._compIcon"/>
+      {{ controllerMap[item.compType]._compName }}
     </div>
     <div class="tree-node__sub-items">
       <template v-if="item.customConfig.columns" v-for="column in item.customConfig.columns">
@@ -15,18 +19,13 @@
   </div>
 </template>
 
-<script>
-import {DesignStore} from "../../DesignStore";
+<script setup>
+import {useDesignStore} from "../../useDesignStore.js";
 
-export default {
-  name: "TreeNode",
-  computed: {
-    DesignStore() {
-      return DesignStore
-    }
-  },
-  props: ['item', 'controllerMap'],
-}
+const props = defineProps(['item', 'controllerMap']);
+
+const {designStore} = useDesignStore();
+
 </script>
 
 <style scoped>
@@ -55,4 +54,10 @@ export default {
   padding-left: 10px;
 }
 
+</style>
+<style>
+.tree-node__label > .el-icon {
+  vertical-align: -2px;
+  color: var(--el-disabled-text-color);
+}
 </style>
