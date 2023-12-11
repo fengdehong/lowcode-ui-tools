@@ -7,7 +7,7 @@ const COMPONENT_TYPE = "FenText";
 export class FenText extends BaseController {
     static _compType = COMPONENT_TYPE;
     static _compName = "文本";
-    static _compIcon = 'iconfont icon-ABC';
+    static _compIcon = {elIcon: "Document"};
 
     static registry(Vue) {
         Vue.component(COMPONENT_TYPE, Controller)

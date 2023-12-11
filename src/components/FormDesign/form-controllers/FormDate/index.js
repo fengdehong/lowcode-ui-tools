@@ -8,7 +8,7 @@ const COMPONENT_NAME = "日期";
 export class FormDate extends FormBaseController {
     static _compType = COMPONENT_TYPE;
     static _compName = COMPONENT_NAME;
-    static _compIcon = 'iconfont icon-riqi';
+    static _compIcon = {elIcon: "Calendar"};
 
     static registry(Vue) {
         Vue.component(COMPONENT_TYPE, Controller)

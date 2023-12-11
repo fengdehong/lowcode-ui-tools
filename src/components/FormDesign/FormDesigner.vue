@@ -25,7 +25,11 @@
               <template #item="{element}">
                 <div :key="element._compType" class="components-item">
                   <div class="components-body">
-                    <i :class="element._compIcon"/>
+                    <ElIcon v-if="element._compIcon.elIcon">
+                      <component :is="element._compIcon.elIcon"/>
+                    </ElIcon>
+
+                    <i v-else :class="element._compIcon"/>
                     {{ element._compName }}
                   </div>
                 </div>
@@ -196,19 +200,20 @@ function onEnd(obj) {
 }
 
 .components-item {
-  flex: 0 0 81px;
+  flex: 0 0 125px;
 }
 
 .components-item > .components-body {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 6px;
   align-items: center;
   font-size: 12px;
   border: 1px solid transparent;
   border-radius: 4px;
   cursor: grab;
   background: #f5f7fa;
-  padding: 2px 6px;
+  padding: 6px 8px;
 }
 
 .components-item > .components-body:hover {
@@ -216,12 +221,16 @@ function onEnd(obj) {
   color: var(--el-color-primary);
 }
 
-.components-item > .components-body > .iconfont {
-  font-size: 24px;
-}
 
 .layout-tree {
   height: 150px;
 }
 
+</style>
+<style>
+.components-item > .components-body > .el-icon,
+.components-item > .components-body > .iconfont {
+  font-size: 18px;
+  color: var(--el-disabled-text-color);
+}
 </style>

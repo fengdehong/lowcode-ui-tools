@@ -8,7 +8,7 @@ const COMPONENT_NAME = "单选框";
 export class FormRadioGroup extends FormBaseController {
     static _compType = COMPONENT_TYPE;
     static _compName = COMPONENT_NAME;
-    static _compIcon = 'iconfont icon-danxuankuang';
+    static _compIcon = {elIcon: "CircleCheck"};
 
     static registry(Vue) {
         Vue.component(COMPONENT_TYPE, Controller)

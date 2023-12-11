@@ -14,14 +14,6 @@
  */
 export default {
   props: ['props'],
-  methods: {
-    addLink() {
-      this.props.links.push({
-        name: "链接名",
-        link: "#"
-      })
-    }
-  }
 }
 </script>
 <style scoped>
