@@ -8,7 +8,9 @@
     <draggable class="options-draggable" :list="customConfig.options" item-key="value" handle=".icon-draggable">
       <template #item="{element}">
         <div class="components-item">
-          <i class="iconfont icon-draggable"/>
+          <ElIcon class="icon-draggable">
+            <Rank/>
+          </ElIcon>
           <ElInput v-model="element.label" placeholder="名称"/>
           <ElInput v-model="element.value" placeholder="值"/>
         </div>
@@ -19,6 +21,7 @@
 <script setup>
 import draggable from "vuedraggable";
 import ItemToolBar from "../../components/ItemToolBar/index.vue";
+import {Rank} from "@element-plus/icons-vue";
 
 defineProps({
   customConfig: {type: Object, required: true}
@@ -27,14 +30,14 @@ defineProps({
 <style scoped>
 .components-item {
   display: flex;
+  align-items: center;
   gap: 4px;
   padding: 6px 8px;
   border-radius: 4px;
   background: #f5f7fa;
-
 }
 
-.iconfont.icon-draggable {
+.icon-draggable {
   cursor: move;
 }
 </style>

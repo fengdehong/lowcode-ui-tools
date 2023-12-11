@@ -229,7 +229,7 @@ function onEnd(obj) {
 <style>
 .components-item > .components-body > .el-icon,
 .components-item > .components-body > .iconfont {
-  font-size: 18px;
+  font-size: 14px;
   color: var(--el-disabled-text-color);
 }
 </style>

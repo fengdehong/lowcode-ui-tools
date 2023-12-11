@@ -42,7 +42,6 @@ function handlerAdd(evt) {
 <template>
   <draggable class="drag-wrapper row-drag" :class="{'is-null':listAdaptor.length===0}"
              v-model="listAdaptor" item-key="id" :animation="100"
-             handle=".item-draggable-handle"
              :group="{ name: 'componentsGroup', pull: true, put: true }"
              @start="handleStart"
              @onMove="handleMove"
@@ -63,7 +62,7 @@ function handlerAdd(evt) {
 <style>
 .drag-wrapper {
   position: relative;
-  //height: 100%;
+//height: 100%;
 }
 
 .drag-wrapper > .draggable-empty {
@@ -71,13 +70,12 @@ function handlerAdd(evt) {
   top: 0;
   left: 0;
   right: 0;
-  //height: 100%;
+//height: 100%;
 }
 
 .drag-wrapper.is-null > .sortable-ghost {
   width: 100%;
-  //height: 100%;
-  border: 1px dashed #337dff;
+//height: 100%; border: 1px dashed #337dff;
   text-align: center;
   vertical-align: center;
 }

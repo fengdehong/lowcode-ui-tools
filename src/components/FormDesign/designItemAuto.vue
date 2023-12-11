@@ -4,7 +4,6 @@
        @click.stop="designStore.setActiveItem(model)"
        @mouseenter.stop="designStore.setHoverItem(model)"
        @mouseleave.stop="designStore.setHoverItem({})">
-    <i class="iconfont icon-draggable item-draggable-handle"/>
     <LayoutWrap :layout-config="model.layoutConfig" class="editing-component">
       <Component :is="model.compType" :model="model"/>
     </LayoutWrap>
@@ -71,18 +70,6 @@ function onDelete() {
   .el-form-item {
     padding: 12px 10px;
   }
-}
-
-.drawing-item .item-draggable-handle {
-  position: absolute;
-  font-size: 18px;
-  top: calc(50% - 18px);
-  left: -18px;
-  display: none;
-}
-
-.drawing-item:hover .item-draggable-handle {
-  display: initial;
 }
 
 .drawing-item {
@@ -167,6 +154,16 @@ function onDelete() {
   }
 }
 
+
+.drawing-item[draggable='true']:after {
+  display: block;
+  content: " ";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  background: rgba(64, 158, 255, .1);
+}
 
 </style>
 <style>
