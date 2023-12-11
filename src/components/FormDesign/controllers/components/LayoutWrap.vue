@@ -1,0 +1,28 @@
+<template>
+  <div :style="style">
+    <slot name="default"></slot>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: "LayoutWrap",
+  props: {
+    layoutConfig: {type: Object, required: true}
+  },
+  computed: {
+    style() {
+      let layoutConfig = this.layoutConfig
+      let style = "";
+      style += `margin: ${layoutConfig.marginTop}px ${layoutConfig.marginRight}px ${layoutConfig.marginBottom}px ${layoutConfig.marginLeft}px;`;
+      style += `padding: ${layoutConfig.paddingTop}px ${layoutConfig.paddingRight}px ${layoutConfig.paddingBottom}px ${layoutConfig.paddingLeft}px;`;
+      return style;
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

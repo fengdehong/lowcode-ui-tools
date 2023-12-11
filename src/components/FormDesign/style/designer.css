@@ -1,0 +1,26 @@
+.form-icon::before {
+    content: "";
+    display: inline-block;
+    width: 64px;
+}
+
+.form-icon.icon-selector::before {
+    height: 32px;
+    background: url("../icons/selector.png") no-repeat center center;
+    background-size: contain;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
