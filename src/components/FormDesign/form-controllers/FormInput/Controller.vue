@@ -1,25 +1,20 @@
 <template>
   <FormItemWrap :formItemConfig="model.formItemConfig">
-    <ElInput v-model="mockValue" :placeholder="model.customConfig.placeholder"
-             :type="model.customConfig.type"/>
+    <ElInput v-model="form[model.formItemConfig.key]"
+             :placeholder="model.customConfig.placeholder"
+             :type="model.customConfig.type"
+             :readonly="readonly"/>
   </FormItemWrap>
 </template>
 
-<script>
+<script setup>
 import FormItemWrap from "../components/FormItemWrap.vue";
-import {FormBaseController} from "../FormBaseController";
 
-export default {
-  components: {FormItemWrap},
-  props: {
-    model: {type: FormBaseController},
-  },
-  data() {
-    return {
-      mockValue: undefined
-    }
-  }
-}
+defineProps({
+  model: {type: Object, required: true},
+  form: {type: Object, required: true},
+  readonly: {type: Boolean, required: false},
+})
 </script>
 
 <style scoped>

@@ -8,7 +8,8 @@ const {designStore} = useDesignStore();
 
 const props = defineProps({
   list: {type: Array, required: true},
-  itemClass: {type: String}
+  itemClass: {type: String},
+  form: {type: Object, required: true},
 });
 const emits = defineEmits(["update:list"]);
 
@@ -50,7 +51,7 @@ function handlerAdd(evt) {
       <el-empty class="draggable-empty" v-if="listAdaptor.length===0" description="请拖入控件"/>
     </template>
     <template #item="{element}">
-      <DesignItemAuto v-model:list="listAdaptor" :model="element"/>
+      <DesignItemAuto v-model:list="listAdaptor" :model="element" :form="form"/>
     </template>
 
   </draggable>
@@ -75,8 +76,7 @@ function handlerAdd(evt) {
 
 .drag-wrapper.is-null > .sortable-ghost {
   width: 100%;
-//height: 100%; border: 1px dashed #337dff;
-  text-align: center;
+//height: 100%; border: 1px dashed #337dff; text-align: center;
   vertical-align: center;
 }
 </style>

@@ -43,7 +43,7 @@
     <div class="center-board" @click="designStore.setActiveItem({})">
       <ElForm label-position="top" class="design-form">
         <LayoutSlot class="drawing-board"
-                    v-model:list="designStore.list"/>
+                    v-model:list="designStore.list" :form="{}"/>
       </ElForm>
     </div>
     <div class="right-board">
@@ -68,7 +68,7 @@ let tempActiveData;
 
 const props = defineProps({
   designGroups: {required: true},
-  designStore: {type: DesignStore, required: true}
+  designStore: {type: Object, required: true}
 });
 
 /**
@@ -148,10 +148,14 @@ function onEnd(obj) {
 }
 
 .center-board .design-form {
+  height: 100%;
+}
+
+.center-board .design-form .drawing-board {
   padding: 16px;
   background: #FFFFFF;
   border-radius: 8px;
-  height: 100%;
+  height: calc(100% - 32px);
   overflow-y: auto;
 }
 
@@ -179,7 +183,7 @@ function onEnd(obj) {
 
 .components-list-content {
   padding: 8px;
-  height: calc(100% - 40px);
+  height: calc(100% - 66px);
   overflow-y: auto;
 
   .components-title {

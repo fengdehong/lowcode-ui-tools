@@ -12,6 +12,9 @@ defineProps({config: {required: true}})
     <el-form-item label="名称">
       <el-input v-model="config.label"/>
     </el-form-item>
+    <el-form-item label="描述">
+      <el-input v-model="config.description" type="textarea"/>
+    </el-form-item>
     <el-form-item label="必填">
       <ElSwitch v-model="config.required"/>
     </el-form-item>

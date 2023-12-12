@@ -1,13 +1,13 @@
 <template>
   <FormItemWrap :formItemConfig="model.formItemConfig">
-    <el-upload
-        :action="apiUrl+'/admin/resource/with-suffix-upload'"
-        :headers="{Authorization:'Bearer ' + GlobalContext.token}"
-        accept="image/png,image/jpeg,image/gif"
-        list-type="picture"
-        :on-success="handleUploadSuccess"
-        :on-error="handleUploadError"
-        :on-progress="onUploadProgress">
+    <el-upload class="image-uploader"
+               :action="UploadConfig.action()"
+               :headers="UploadConfig.headers()"
+               accept="image/png,image/jpeg,image/gif"
+               list-type="picture"
+               :on-success="handleUploadSuccess"
+               :on-error="handleUploadError"
+               :on-progress="onUploadProgress">
       <el-button>
         <el-icon class="el-icon--right" style="margin-right: 8px">
           <Picture/>
@@ -20,24 +20,17 @@
 
 <script>
 import FormItemWrap from "../components/FormItemWrap.vue";
-import {FormBaseController} from "../FormBaseController";
 import {Picture, Plus, Upload} from "@element-plus/icons-vue";
-import {GlobalContext} from "@/context/GlobalContext";
-import {apiUrl} from "@/utils/getUrlPrefix";
+import {UploadConfig} from "../../utils/UploadConfig.js";
 
 export default {
-  computed: {
-    GlobalContext() {
-      return GlobalContext
-    }
-  },
   components: {Picture, Upload, Plus, FormItemWrap},
   props: {
-    model: {type: FormBaseController},
+    model: {type: Object, required: true},
   },
   data() {
     return {
-      apiUrl,
+      UploadConfig,
       uploadProcess: undefined,
       mockValue: undefined
     }
@@ -47,7 +40,7 @@ export default {
       console.log(e)
       let uid = e.data.uid;
       this.uploadProcess = undefined;
-      this.$emit("update:modelValue", uid);
+      this.form[this.model.formItemConfig.key] = uid;
       this.$message.success("上传成功");
     },
     handleUploadError(e) {
@@ -74,6 +67,10 @@ export default {
 </style>
 
 <style>
+.image-uploader {
+  width: 100%;
+}
+
 .avatar-uploader .el-upload {
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;

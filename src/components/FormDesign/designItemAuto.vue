@@ -5,7 +5,7 @@
        @mouseenter.stop="designStore.setHoverItem(model)"
        @mouseleave.stop="designStore.setHoverItem({})">
     <LayoutWrap :layout-config="model.layoutConfig" class="editing-component">
-      <Component :is="model.compType" :model="model"/>
+      <Component :is="model.compType" :model="model" :form="form"/>
     </LayoutWrap>
     <div class="drawing-item-controller">
       <ElLink title="复制" icon="DocumentCopy" type="primary" @click.stop="onCopy"/>
@@ -16,12 +16,12 @@
 
 <script setup>
 import LayoutWrap from "./controllers/components/LayoutWrap.vue";
-import {BaseController} from "./controllers/BaseController";
 import {useDesignStore} from "./useDesignStore";
 
 const props = defineProps({
   list: {type: Array, required: true},
-  model: {type: BaseController, required: true},
+  model: {type: Object, required: true},
+  form: {type: Object, required: true},
 });
 
 const emits = defineEmits(["update:list"]);

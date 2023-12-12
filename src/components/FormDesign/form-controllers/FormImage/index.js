@@ -8,7 +8,7 @@ const COMPONENT_NAME = "图片上传";
 export class FormImage extends FormBaseController {
     static _compType = COMPONENT_TYPE;
     static _compName = COMPONENT_NAME;
-    static _compIcon = 'iconfont icon-tupian';
+    static _compIcon = {elIcon: "Picture"};
 
     static registry(Vue) {
         Vue.component(COMPONENT_TYPE, Controller)

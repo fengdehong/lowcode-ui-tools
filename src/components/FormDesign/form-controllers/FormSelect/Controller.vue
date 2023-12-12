@@ -1,6 +1,7 @@
 <template>
   <FormItemWrap :formItemConfig="model.formItemConfig">
-    <ElSelect style="width: 100%" :placeholder="model.customConfig.placeholder">
+    <ElSelect v-model="form[model.formItemConfig.key]" :placeholder="model.customConfig.placeholder"
+              style="width: 100%">
       <ElOption v-for="option in model.customConfig.options"
                 :key="option.value"
                 :label="option.label"
@@ -9,16 +10,14 @@
   </FormItemWrap>
 </template>
 
-<script>
+<script setup>
 import FormItemWrap from "../components/FormItemWrap.vue";
-import {FormBaseController} from "../FormBaseController";
 
-export default {
-  components: {FormItemWrap},
-  props: {
-    model: {type: FormBaseController},
-  }
-}
+defineProps({
+  model: {type: Object, required: true},
+  form: {type: Object, required: true},
+  readonly: {type: Boolean, required: false},
+})
 </script>
 
 <style scoped>
