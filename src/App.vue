@@ -2,11 +2,16 @@
 import FormDesigner from "./components/FormDesign/FormDesigner.vue";
 import {DesignStore} from "./components/FormDesign/DesignStore.js";
 import {reactive, ref} from "vue";
-import {FormInput} from "./components/FormDesign/form-controllers/FormInput/index.js";
+import {FormNumber} from "./components/FormDesign/form-controllers/FormNumber/index.js";
+import {FormPassword} from "./components/FormDesign/form-controllers/FormPassword/index.js";
+import {FormTextarea} from "./components/FormDesign/form-controllers/FormTextarea/index.js";
+import {FormTextbox} from "./components/FormDesign/form-controllers/FormTextbox/index.js";
 import {FormSelect} from "./components/FormDesign/form-controllers/FormSelect/index.js";
+import {FormCheckbox} from "./components/FormDesign/form-controllers/FormCheckbox/index.js";
 import {FormDate} from "./components/FormDesign/form-controllers/FormDate/index.js";
 import {FormImage} from "./components/FormDesign/form-controllers/FormImage/index.js";
 import {FormRadioGroup} from "./components/FormDesign/form-controllers/FormRadioGroup/index.js";
+import {FormRate} from "./components/FormDesign/form-controllers/FormRate/index.js";
 import {FenText} from "./components/FormDesign/controllers/FenText/index.js";
 import FormViewer from "./components/FormViewer/FormViewer.vue";
 import {jsonConfigFormFields} from "./components/FormDesign/utils/ControllerConfigUtils.js";
@@ -21,11 +26,16 @@ const designGroups = [
   {
     group: "表单控件",
     controllers: [
-      FormInput,
+      FormTextbox,
+      FormTextarea,
+      FormNumber,
+      FormPassword,
       FormImage,
       FormSelect,
       FormDate,
       FormRadioGroup,
+      FormCheckbox,
+      FormRate,
     ]
   },
   {
@@ -108,7 +118,7 @@ const form = reactive({});
 }
 
 .form-viewer.h5 {
-  width: 450px;
+  width: 400px;
   height: calc(100vh - 80px);
   padding: 0;
 }
