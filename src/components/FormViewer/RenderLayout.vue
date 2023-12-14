@@ -7,9 +7,7 @@ defineProps({
 </script>
 
 <template>
-  <div>
-    <RenderItem v-for="element in list" :model="element"/>
-  </div>
+  <RenderItem v-for="element in list" :model="element"/>
 </template>
 
 <style scoped>

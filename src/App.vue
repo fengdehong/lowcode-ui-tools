@@ -10,6 +10,7 @@ import {FormRadioGroup} from "./components/FormDesign/form-controllers/FormRadio
 import {FenText} from "./components/FormDesign/controllers/FenText/index.js";
 import FormViewer from "./components/FormViewer/FormViewer.vue";
 import {jsonConfigFormFields} from "./components/FormDesign/utils/ControllerConfigUtils.js";
+import FormViewerH5 from "./components/FormViewer/FormViewerH5.vue";
 
 /**
  *
@@ -71,6 +72,12 @@ const form = reactive({});
                       :controllers="controllers" :json="json" :form="form"/>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="viewer-h5" name="viewer-h5">
+        <div class="tab-wrap viewer">
+          <FormViewerH5 class="form-viewer h5" v-if="activeName==='viewer-h5'" :form-fields="formFields"
+                        :controllers="controllers" :json="json" :form="form"/>
+        </div>
+      </el-tab-pane>
     </el-tabs>
 
   </div>
@@ -98,5 +105,11 @@ const form = reactive({});
   margin: 0 auto;
   padding: 16px;
   border-radius: 8px;
+}
+
+.form-viewer.h5 {
+  width: 450px;
+  height: calc(100vh - 80px);
+  padding: 0;
 }
 </style>

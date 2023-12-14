@@ -1,14 +1,13 @@
 <template>
-  <div v-if="fieldVisible(model.formItemConfig)" class="drawing-item">
-    <LayoutWrap :layout-config="model.layoutConfig">
-      <Component :is="model.compType" :model="model" :form="form"/>
-    </LayoutWrap>
-  </div>
+  <Component v-if="fieldVisible(model.formItemConfig)"
+             :is="`${model.compType}${FormEnv.isH5?'H5':''}`"
+             :model="model"
+             :form="form"/>
 </template>
 
 <script setup>
-import LayoutWrap from "../FormDesign/controllers/components/LayoutWrap.vue";
 import {useFormContext} from "../FormDesign/utils/useFormContext";
+import {FormEnv} from "./FormEnv.js";
 
 const props = defineProps({
   model: {type: Object, required: true}

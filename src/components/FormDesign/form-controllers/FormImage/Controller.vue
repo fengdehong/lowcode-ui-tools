@@ -18,44 +18,42 @@
   </FormItemWrap>
 </template>
 
-<script>
+<script setup>
+import {Picture} from "@element-plus/icons-vue";
+import {ref} from "vue";
 import FormItemWrap from "../components/FormItemWrap.vue";
-import {Picture, Plus, Upload} from "@element-plus/icons-vue";
 import {UploadConfig} from "../../utils/UploadConfig.js";
+import {ElNotification} from "element-plus";
 
-export default {
-  components: {Picture, Upload, Plus, FormItemWrap},
-  props: {
-    model: {type: Object, required: true},
-  },
-  data() {
-    return {
-      UploadConfig,
-      uploadProcess: undefined,
-      mockValue: undefined
-    }
-  },
-  methods: {
-    handleUploadSuccess(e) {
-      console.log(e)
-      let uid = e.data.uid;
-      this.uploadProcess = undefined;
-      this.form[this.model.formItemConfig.key] = uid;
-      this.$message.success("上传成功");
-    },
-    handleUploadError(e) {
-      this.$message.error("上传失败");
-      this.uploadProcess = undefined;
-    },
-    onUploadProgress(event, file, fileList) {
-      console.log(event);
-      let percent = event.percent;
-      if (typeof percent === "number") {
-        this.uploadProcess = percent.toFixed(2);
-      }
-    }
+
+const props = defineProps({
+  model: {type: Object, required: true},
+  form: {type: Object, required: true},
+  readonly: {type: Boolean, required: false},
+});
+
+const uploadProcess = ref(undefined);
+
+function handleUploadSuccess(e) {
+  console.log(e)
+  let uid = e.data.uid;
+  uploadProcess.value = undefined;
+  props.form[props.model.formItemConfig.key] = uid;
+  ElNotification.success("上传成功");
+}
+
+function handleUploadError(e) {
+  ElNotification.error("上传失败");
+  uploadProcess.value = undefined;
+}
+
+function onUploadProgress(event, file, fileList) {
+  let percent = event.percent;
+  if (typeof percent === "number") {
+    uploadProcess.value = percent.toFixed(2);
   }
 }
+
 </script>
 
 <style scoped>

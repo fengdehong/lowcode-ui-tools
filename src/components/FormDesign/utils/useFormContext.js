@@ -29,7 +29,9 @@ export function useFormContext() {
      * @return {Boolean}
      */
     function fieldReadonly(key) {
-        const field = formFields.find(field => field.id === key);
+
+        const field = formFields.find(field => field.key === key);
+        console.log("fieldReadonly", readonly.value, formFields, key, field)
         if (!field) return true;
         return readonly.value || field.permission === 'read';
     }

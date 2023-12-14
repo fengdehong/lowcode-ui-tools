@@ -47,9 +47,16 @@
       </ElForm>
     </div>
     <div class="right-board">
-      <config-panel :page-config="designStore.formConfig" :activeItem="designStore.activeItem"
-                    :itemList="designStore.list"
-                    :components="configPanelComponents"/>
+      <div class="config-panel">
+        <div class="title">属性配置</div>
+        <el-form size="small" label-position="top" class="config-form">
+          <FormItemConfig v-if="designStore.activeItem?.formItemConfig"
+                          :config="designStore.activeItem.formItemConfig"/>
+          <component v-if="designStore.activeItem?.compType"
+                     v-model:customConfig="designStore.activeItem.customConfig"
+                     :is="designStore.activeItem.compType+'ConfigPanel'"/>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -57,12 +64,12 @@
 
 import draggable from "vuedraggable";
 import {DesignStore} from "./DesignStore";
-import configPanel from "./configPanel.vue";
 import LayoutTree from "./components/LayoutTree/index.vue";
 import LayoutSlot from "./LayoutSlot.vue";
 
 import "./style/designer.css"
-import {provide, ref} from "vue";
+import {provide} from "vue";
+import FormItemConfig from "./form-controllers/components/FormItemConfig.vue";
 
 let tempActiveData;
 
@@ -79,7 +86,6 @@ const designStore = props.designStore;
 
 provide("design-store", designStore);
 
-const configPanelComponents = ref([]);
 
 let controllers = [];
 for (let designGroup of props.designGroups) {
@@ -229,8 +235,59 @@ function onEnd(obj) {
   height: 150px;
 }
 
+
+.config-panel {
+  height: 100%;
+}
+
+.config-panel .title {
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: bold;
+  height: 40px;
+  line-height: 40px;
+  background: #f5f7fa;
+}
+
+.config-panel .config-form {
+  padding: 16px;
+  height: calc(100% - 100px);
+  overflow-y: auto;
+}
 </style>
+
 <style>
+.config-panel > .el-form,
+.config-panel > .el-form > .el-tabs {
+  height: 100%;
+}
+
+.config-panel > .el-form > .el-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.config-panel > .el-form > .el-tabs > .el-tabs__header {
+  flex: 1 1 40px;
+  margin-bottom: 0;
+}
+
+.config-panel > .el-form > .el-tabs > .el-tabs__header .el-tabs__item {
+  padding: 4px 8px 4px 16px;
+}
+
+.config-panel > .el-form > .el-tabs > .el-tabs__content {
+  flex: 1 1 100%;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.config-panel .el-form-item__label {
+  font-weight: bold;
+  --el-text-color-regular: rgb(144, 147, 153);
+  padding: 0;
+}
+
 .components-item > .components-body > .el-icon,
 .components-item > .components-body > .iconfont {
   font-size: 14px;

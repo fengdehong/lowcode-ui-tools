@@ -5,5 +5,8 @@ export const UploadConfig = {
     headers() {
         // return {Authorization: 'Bearer ' + GlobalContext.token};
         return {}
+    },
+    getResourceUrl(resourceId) {
+        return '/request-api/admin/resource/file/' + resourceId;
     }
 }
