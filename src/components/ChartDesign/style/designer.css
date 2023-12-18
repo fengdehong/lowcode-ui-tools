@@ -1,0 +1,37 @@
+.chart-icon::before {
+    content: "";
+    display: inline-block;
+    width: 48px;
+    height: 32px;
+}
+
+.chart-icon.chart-line::before {
+    background: url("../icons/chart-line.svg") no-repeat center center;
+    background-size: contain;
+}
+
+.chart-icon.chart-bar::before {
+    background: url("../icons/chart-bar.svg") no-repeat center center;
+    background-size: contain;
+}
+
+
+.chart-icon.chart-pie::before {
+    background: url("../icons/chart-pie.svg") no-repeat center center;
+    background-size: contain;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

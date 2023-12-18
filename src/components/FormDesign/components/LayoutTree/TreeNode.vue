@@ -7,6 +7,8 @@
       <ElIcon v-if="controllerMap[item.compType]._compIcon.elIcon">
         <component :is="controllerMap[item.compType]._compIcon.elIcon"/>
       </ElIcon>
+      <div v-else-if="controllerMap[item.compType]._compIcon.chartIcon" class="chart-icon"
+           :class="{[controllerMap[item.compType]._compIcon.chartIcon]:true}"/>
       <i v-else :class="'iconfont '+controllerMap[item.compType]._compIcon"/>
       {{ controllerMap[item.compType]._compName }}
     </div>
@@ -34,6 +36,7 @@ const {designStore} = useDesignStore();
   padding: 0 10px;
   line-height: 24px;
   font-size: 12px;
+  display: flex;
 }
 
 .tree-node.is-active > .tree-node__label {
@@ -46,8 +49,13 @@ const {designStore} = useDesignStore();
   color: #409eff;
 }
 
-.tree-node__label > .iconfont {
-  margin-right: 4px
+.tree-node__label > .chart-icon {
+  margin-right: 6px
+}
+.tree-node__label > .chart-icon::before {
+  width: 16px;
+  height: 16px;
+  vertical-align: -4px;
 }
 
 .tree-node > .tree-node__sub-items {
