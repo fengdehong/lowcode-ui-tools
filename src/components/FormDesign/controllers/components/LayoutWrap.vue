@@ -1,5 +1,5 @@
 <template>
-  <div :style="style">
+  <div :style="style" class="layout-wrap">
     <slot name="default"/>
   </div>
 </template>
@@ -24,5 +24,8 @@ export default {
 </script>
 
 <style scoped>
-
+.layout-wrap {
+  width: 100%;
+  height: 100%;
+}
 </style>

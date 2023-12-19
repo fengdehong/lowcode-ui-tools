@@ -25,12 +25,6 @@ const router = createRouter({
             meta: {title: "报表设计"},
             component: () => import("../views/ResizableTestPage.vue")
         },
-        {
-            path: "/vue-grid-layout",
-            name: "vue-grid-layout",
-            meta: {title: "布局设计"},
-            component: () => import("../views/VueGridLayoutPage.vue")
-        },
     ]
 })
 

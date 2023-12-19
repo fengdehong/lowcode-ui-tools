@@ -1,16 +1,14 @@
 <template>
-  <div ref="chartRef" class="chart-content"/>
+  <ChartBase :option="option"/>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import {onMounted, ref} from "vue";
+import ChartBase from "@/components/ChartDesign/chart-controllers/ChartBase.vue";
 
 
 const props = defineProps({
   model: {},
 });
-const chartRef = ref(null);
 const option = {
   title: {
     text: 'Referer of a Website',
@@ -30,11 +28,11 @@ const option = {
       type: 'pie',
       radius: '50%',
       data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' }
+        {value: 1048, name: 'Search Engine'},
+        {value: 735, name: 'Direct'},
+        {value: 580, name: 'Email'},
+        {value: 484, name: 'Union Ads'},
+        {value: 300, name: 'Video Ads'}
       ],
       emphasis: {
         itemStyle: {
@@ -46,16 +44,8 @@ const option = {
     }
   ]
 };
-onMounted(() => {
-  let myChart = echarts.init(chartRef.value);
-  myChart.setOption(option);
-})
 
 </script>
 
 <style scoped>
-.chart-content {
-  width: 100%;
-  height: 200px;
-}
 </style>

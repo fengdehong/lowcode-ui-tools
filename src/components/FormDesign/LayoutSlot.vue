@@ -38,6 +38,28 @@ function handlerAdd(evt) {
   }
 }
 
+/**
+ *
+ * @param item {BaseController}
+ */
+function onCopy(item) {
+  let list = [...props.list];
+  const oldIndex = list.findIndex(old => old.id === item.id);
+  list.splice(oldIndex, 0, item.clone());
+  emits("update:list", list);
+}
+
+/**
+ *
+ * @param item {BaseController}
+ */
+function onDelete(item) {
+  let list = [...props.list];
+  const oldIndex = list.findIndex(old => old.id === item.id);
+  list.splice(oldIndex, 1);
+  emits("update:list", list);
+}
+
 </script>
 
 <template>
@@ -51,7 +73,7 @@ function handlerAdd(evt) {
       <el-empty class="draggable-empty" v-if="listAdaptor.length===0" description="请拖入控件"/>
     </template>
     <template #item="{element}">
-      <DesignItemAuto v-model:list="listAdaptor" :model="element" :form="form"/>
+      <DesignItemAuto v-model:list="listAdaptor" :model="element" :form="form" @copy="onCopy" @delete="onDelete"/>
     </template>
 
   </draggable>
@@ -76,7 +98,6 @@ function handlerAdd(evt) {
 
 .drag-wrapper.is-null > .sortable-ghost {
   width: 100%;
-//height: 100%; border: 1px dashed #337dff; text-align: center;
-  vertical-align: center;
+//height: 100%; border: 1px dashed #337dff; text-align: center; vertical-align: center;
 }
 </style>

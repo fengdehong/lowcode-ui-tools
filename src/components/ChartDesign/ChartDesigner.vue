@@ -11,42 +11,34 @@
             <div class="components-title">
               {{ designGroup.group }}
             </div>
-            <draggable
-                class="components-draggable"
-                :list="designGroup.controllers"
-                item-key="_compType"
-                :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-                :clone="cloneComponent"
-                draggable=".components-item"
-                :sort="false"
-                @start="onStart"
-                @end="onEnd"
-            >
-              <template #item="{element}">
-                <div :key="element._compType" class="components-item">
-                  <div class="components-body">
-                    <ElIcon v-if="element._compIcon.elIcon">
-                      <component :is="element._compIcon.elIcon"/>
-                    </ElIcon>
-                    <div v-else-if="element._compIcon.chartIcon" class="chart-icon"
-                         :class="{[element._compIcon.chartIcon]:true}"/>
-                    <i v-else :class="element._compIcon"/>
-                    {{ element._compName }}
-                  </div>
+            <div class="components-draggable">
+              <div v-for="element in designGroup.controllers" :key="element._compType" class="components-item"
+                   draggable="true" @dragstart="onControllerDragStart(element,$event)">
+                <div class="components-body">
+                  <ElIcon v-if="element._compIcon.elIcon">
+                    <component :is="element._compIcon.elIcon"/>
+                  </ElIcon>
+                  <div v-else-if="element._compIcon.chartIcon" class="chart-icon"
+                       :class="{[element._compIcon.chartIcon]:true}"/>
+                  <i v-else :class="element._compIcon"/>
+                  {{ element._compName }}
                 </div>
-              </template>
-
-            </draggable>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <LayoutTree :design-group="designGroups"/>
     </div>
     <div class="center-board" @click="designStore.setActiveItem({})">
-      <ElForm label-position="top" class="design-form">
-        <LayoutSlot class="drawing-board"
-                    v-model:list="designStore.list" :form="{}"/>
-      </ElForm>
+      <GridLayout class="main-layout" v-model:layout="designStore.gridLayout"
+                  @onDrop="onLayoutDrop">
+        <template #default="{item}">
+          <DesignItemAuto v-if="findRenderItem(item.id)" :form="{}" :model="findRenderItem(item.id)"
+                          v-model:list="designStore.list"
+                          @copy="onCopy" @delete="onDelete"/>
+        </template>
+      </GridLayout>
     </div>
     <div class="right-board">
       <div class="config-panel">
@@ -64,27 +56,27 @@
 </template>
 <script setup>
 
-import draggable from "vuedraggable";
-import {DesignStore} from "../FormDesign/DesignStore";
+import {ChartDesignStore} from "./ChartDesignStore";
 import LayoutTree from "../FormDesign/components/LayoutTree/index.vue";
-import LayoutSlot from "../FormDesign/LayoutSlot.vue";
 
 import "./style/designer.css"
-import {provide} from "vue";
+import {provide, reactive} from "vue";
 import FormItemConfig from "../FormDesign/form-controllers/components/FormItemConfig.vue";
+import GridLayout from "@/components/GridLayout/GridLayout.vue";
+import DesignItemAuto from "@/components/FormDesign/designItemAuto.vue";
+import {compact} from "@/components/GridLayout/utils.js";
 
 let tempActiveData;
 
 const props = defineProps({
   designGroups: {required: true},
-  designStore: {type: Object, required: true}
 });
 
 /**
  *
- * @type {DesignStore}
+ * @type {ChartDesignStore}
  */
-const designStore = props.designStore;
+const designStore = reactive(new ChartDesignStore());
 
 provide("design-store", designStore);
 
@@ -99,29 +91,81 @@ for (let designGroup of props.designGroups) {
 
 designStore.setControllers(controllers);
 
-function cloneComponent(origin) {
-  let newComponent = new origin();
-  console.log("new component:", newComponent);
-  designStore.setActiveItem(newComponent);
+function findRenderItem(id) {
+  return designStore.list.find(item => item.id === id);
 }
 
-function onStart(obj) {
+/**
+ *
+ * @param origin {Function}
+ * @param e {DragEvent}
+ */
+function onControllerDragStart(origin, e) {
+  tempActiveData = new origin();
+}
+
+/**
+ *
+ * @param layout {LayoutItem[]}
+ * @param item {LayoutItem}
+ * @param e {DragEvent}
+ */
+function onLayoutDrop(layout, item, e) {
+  if (!tempActiveData) return;
+  item = Object.assign({}, item, {id: tempActiveData.id})
+  designStore.list.push(tempActiveData);
+  designStore.setActiveItem(tempActiveData);
+  tempActiveData = null;
+
+  let newLayout = [...designStore.gridLayout];
+  newLayout.push(item);
+  designStore.gridLayout = compact(newLayout);
 
 }
 
-function onEnd(obj) {
-  console.log("onEnd", obj);
-  if (obj.from !== obj.to) {
-    designStore.setActiveItem(tempActiveData);
-    if (obj.to.className.indexOf('row-drag') < 0) {
-      designStore.insertItem(obj.newIndex, tempActiveData);
-      console.log("add new item:", tempActiveData);
-    }
-  } else {
-    designStore.setActiveItem({});
+
+/**
+ *
+ * @param item {BaseController}
+ */
+function onCopy(item) {
+  const clone = item.clone();
+
+  let oldIndex = designStore.list.findIndex(old => old.id === item.id);
+  if (oldIndex < 0) throw new Error("当前对象不存在:" + item.id);
+  designStore.list.splice(oldIndex + 1, 0, clone);
+  designStore.setActiveItem(clone);
+
+  oldIndex = designStore.gridLayout.findIndex(old => old.id === item.id);
+  if (oldIndex < 0) throw new Error("当前对象布局信息不存在:" + item.id);
+  const oldLayoutItem = designStore.gridLayout[oldIndex];
+  const newLayoutItem = Object.assign({}, oldLayoutItem, {id: clone.id});
+  if (oldLayoutItem.column + (oldLayoutItem.width - 1) * 2 <= 24) {
+    newLayoutItem.column = oldLayoutItem.column + oldLayoutItem.width;
   }
-
+  console.log("onCopy:", oldLayoutItem, newLayoutItem);
+  let newLayout = [...designStore.gridLayout];
+  newLayout.splice(oldIndex + 1, 0, newLayoutItem);
+  designStore.gridLayout = compact(newLayout);
 }
+
+/**
+ *
+ * @param item {BaseController}
+ */
+function onDelete(item) {
+  let index = designStore.list.findIndex(old => old.id === item.id);
+  designStore.list.splice(index, 1);
+  designStore.setActiveItem({});
+
+  index = designStore.gridLayout.findIndex(old => old.id === item.id);
+
+
+  let newLayout = [...designStore.gridLayout];
+  newLayout.splice(index, 1);
+  designStore.gridLayout = compact(newLayout);
+}
+
 
 </script>
 <style scoped>
@@ -155,7 +199,7 @@ function onEnd(obj) {
   background: #f5f7fa;
 }
 
-.center-board .design-form {
+.center-board .main-layout {
   height: 100%;
 }
 

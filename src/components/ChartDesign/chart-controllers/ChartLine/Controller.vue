@@ -1,16 +1,20 @@
 <template>
-  <div ref="chartRef" class="chart-content"/>
+  <ChartBase :option="option"/>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import {onMounted, ref} from "vue";
 
+
+import ChartBase from "../ChartBase.vue";
 
 const props = defineProps({
   model: {},
 });
-const chartRef = ref(null);
+
+/**
+ *
+ * @type {import("echarts").LineSeriesOption}
+ */
 const option = {
   xAxis: {
     type: 'category',
@@ -26,16 +30,10 @@ const option = {
     }
   ]
 };
-onMounted(() => {
-  let myChart = echarts.init(chartRef.value);
-  myChart.setOption(option);
-})
+
 
 </script>
 
 <style scoped>
-.chart-content {
-  width: 100%;
-  height: 200px;
-}
+
 </style>

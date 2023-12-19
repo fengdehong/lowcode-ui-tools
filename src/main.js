@@ -9,14 +9,12 @@ import FormRegister from "./components/FormDesign/form-controllers/Register.js"
 import ChartRegister from "./components/ChartDesign/chart-controllers/Register.js"
 import router from "./router";
 
-import VueGridLayout from 'vue-grid-layout'
-
 const app = createApp(App);
 app.use(ElementPlus, {locale: zhCn});
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-app.use(VueGridLayout);
+
 app.use(ControllersRegister);
 app.use(FormRegister);
 app.use(ChartRegister);

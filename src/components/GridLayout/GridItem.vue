@@ -12,7 +12,7 @@ const props = defineProps({
   height: {type: Number, required: true},
 });
 
-const emits = defineEmits(["update:size", "update:position"]);
+const emits = defineEmits(["update:size", "update:position", "itemDragStart", "itemDragEnd"]);
 
 /**
  *
@@ -61,6 +61,7 @@ function calcGap() {
 }
 
 function calcPlaceholder() {
+  if (!containerRef.value) return;
   let rect = containerRef.value.getBoundingClientRect();
   placeholderSize.width = rect.width - props.padding * 2;
   placeholderSize.height = rect.height - props.padding * 2;
@@ -87,6 +88,7 @@ function ondragstart(e) {
   // e.preventDefault();
   dragStartPosition = {row: props.row, column: props.column, x: e.x, y: e.y};
   dragging.value = true;
+  emits("itemDragStart", props.id);
 }
 
 /**
@@ -107,6 +109,7 @@ function onDrag(e) {
 function onDragend(e) {
   // e.preventDefault();
   dragging.value = false;
+  emits("itemDragEnd", props.id);
 }
 </script>
 
@@ -122,8 +125,7 @@ function onDragend(e) {
     <div class="inner">
       <div class="resizable-placeholder"
            :style="{width:placeholderSize.width+'px',height:placeholderSize.height+'px'}">
-        <div class="placeholder-inner"/>
-        {{ `${id}::${row},${column},${width},${height}` }}
+        <slot/>
         <span class="resizable-handle resizable-handle-s" @mousedown="mouseDown('s',$event)"/>
         <span class="resizable-handle resizable-handle-w" @mousedown="mouseDown('w',$event)"/>
         <span class="resizable-handle resizable-handle-e" @mousedown="mouseDown('e',$event)"/>

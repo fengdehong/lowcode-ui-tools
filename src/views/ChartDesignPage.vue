@@ -28,7 +28,7 @@ const designGroups = [
     controllers: [
       FenText,
     ]
-  }
+  },
 ]
 
 let controllers = [];

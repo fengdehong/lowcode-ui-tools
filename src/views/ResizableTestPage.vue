@@ -1,5 +1,12 @@
 <template>
-  <GridLayout class="resizable-container" v-model:layout="layout"/>
+  <div class="drag-able-item">
+    <div draggable="true" >draggable</div>
+  </div>
+  <GridLayout class="resizable-container" v-model:layout="layout">
+    <template #default="{item}">
+      {{ item.id }}
+    </template>
+  </GridLayout>
 </template>
 <script setup>
 

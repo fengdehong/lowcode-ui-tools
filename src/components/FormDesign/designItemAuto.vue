@@ -24,28 +24,16 @@ const props = defineProps({
   form: {type: Object, required: true},
 });
 
-const emits = defineEmits(["update:list"]);
+const emits = defineEmits(["update:list", "copy", "delete"]);
 const {designStore} = useDesignStore();
 
 function onCopy() {
-  let list = [...props.list];
-  const clone = props.model.clone();
-  let oldIndex = list.indexOf(props.model);
-  if (oldIndex >= 0) {
-    list.splice(oldIndex + 1, 0, clone);
-  } else {
-    list.push(clone);
-  }
-  designStore.setActiveItem(clone);
-  emits("update:list", list);
+  emits("copy", props.model);
 }
 
+
 function onDelete() {
-  let list = [...props.list];
-  const index = list.findIndex(item => item.id === props.model.id);
-  list.splice(index, 1);
-  designStore.setActiveItem({});
-  emits("update:list", list);
+  emits("delete", props.model);
 }
 
 </script>
@@ -168,6 +156,6 @@ function onDelete() {
 </style>
 <style>
 .editing-component * {
-  pointer-events: none;
+//pointer-events: none;
 }
 </style>
