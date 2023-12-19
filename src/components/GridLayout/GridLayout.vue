@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import GridItem from "@/components/GridLayout/GridItem.vue";
 import {compact} from "./utils.js";
 
@@ -19,7 +19,14 @@ onMounted(() => {
   parentHeight.value = parentContainerRef.value.getBoundingClientRect().height;
   let newArrayDetect = compact(props.layout);
   emits("update:layout", newArrayDetect);
+  const resizeObserver = new ResizeObserver((target) => {
+    parentWidth.value = parentContainerRef.value.getBoundingClientRect().width;
+    parentHeight.value = parentContainerRef.value.getBoundingClientRect().height;
+  });
+  resizeObserver.observe(parentContainerRef.value);
+  onUnmounted(() => resizeObserver.disconnect());
 })
+
 
 /**
  *
@@ -133,6 +140,6 @@ function onDragover(e) {
   height: 100%;
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  grid-template-rows: repeat(24, 1fr);
+  grid-auto-rows: 10px;
 }
 </style>

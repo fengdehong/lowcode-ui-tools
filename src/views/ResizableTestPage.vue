@@ -1,5 +1,5 @@
 <template>
-  <GridLayout v-model:layout="layout"/>
+  <GridLayout class="resizable-container" v-model:layout="layout"/>
 </template>
 <script setup>
 
@@ -18,7 +18,8 @@ const layout = ref([
 <style>
 .resizable-container {
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: auto;
   background: #edeff3;
   padding: 0;
 }

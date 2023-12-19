@@ -56,7 +56,7 @@ function calcGap() {
   emits("update:size", {
     id: props.id,
     width: Math.round(width / (props.parentWidth / 24)),
-    height: Math.round(height / (props.parentHeight / 24)),
+    height: Math.round(height / 10),
   })
 }
 
@@ -96,7 +96,7 @@ function ondragstart(e) {
 function onDrag(e) {
   e.preventDefault();
   let newColumn = dragStartPosition.column + Math.round((e.x - dragStartPosition.x) / (props.parentWidth / 24));
-  let newRow = dragStartPosition.row + Math.round((e.y - dragStartPosition.y) / (props.parentHeight / 24));
+  let newRow = dragStartPosition.row + Math.round((e.y - dragStartPosition.y) / 10);
   emits("update:position", {row: newRow, column: newColumn, id: props.id})
 }
 

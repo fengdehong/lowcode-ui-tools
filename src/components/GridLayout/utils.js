@@ -45,47 +45,6 @@ export function compact(layout) {
 }
 
 
-const heightWidth = {row: "height", column: "width"};
-
-/**
- * Before moving item down, it will check if the movement will cause collisions and move those items down before.
- * @param layout {LayoutItem[]}
- * @param item {LayoutItem}
- * @param moveToCoord {Number}
- * @param axis {"row"|"column"}
- */
-export function resolveCompactionCollision(layout, item, moveToCoord, axis) {
-    const sizeProp = heightWidth[axis];
-    item[axis] += 1;
-    const itemIndex = layout
-        .map(layoutItem => {
-            return layoutItem.id;
-        })
-        .indexOf(item.id);
-
-    // Go through each item we collide with.
-    for (let i = itemIndex + 1; i < layout.length; i++) {
-        const otherItem = layout[i];
-        // Ignore static items
-        if (otherItem.static) continue;
-
-        // Optimization: we can break early if we know we're past this el
-        // We can do this b/c it's a sorted layout
-        if (otherItem.row > item.row + item.height) break;
-
-        if (collides(item, otherItem)) {
-            resolveCompactionCollision(
-                layout,
-                otherItem,
-                moveToCoord + item[sizeProp],
-                axis
-            );
-        }
-    }
-
-    item[axis] = moveToCoord;
-}
-
 
 /**
  * Get all static elements.
@@ -153,6 +112,50 @@ export function compactItem(fullLayout, compareWith, l) {
     l.column = Math.max(l.column, 1);
 
     return l;
+}
+
+
+
+
+const heightWidth = {row: "height", column: "width"};
+
+/**
+ * Before moving item down, it will check if the movement will cause collisions and move those items down before.
+ * @param layout {LayoutItem[]}
+ * @param item {LayoutItem}
+ * @param moveToCoord {Number}
+ * @param axis {"row"|"column"}
+ */
+export function resolveCompactionCollision(layout, item, moveToCoord, axis) {
+    const sizeProp = heightWidth[axis];
+    item[axis] += 1;
+    const itemIndex = layout
+        .map(layoutItem => {
+            return layoutItem.id;
+        })
+        .indexOf(item.id);
+
+    // Go through each item we collide with.
+    for (let i = itemIndex + 1; i < layout.length; i++) {
+        const otherItem = layout[i];
+        // Ignore static items
+        if (otherItem.static) continue;
+
+        // Optimization: we can break early if we know we're past this el
+        // We can do this b/c it's a sorted layout
+        if (otherItem.row > item.row + item.height) break;
+
+        if (collides(item, otherItem)) {
+            resolveCompactionCollision(
+                layout,
+                otherItem,
+                moveToCoord + item[sizeProp],
+                axis
+            );
+        }
+    }
+
+    item[axis] = moveToCoord;
 }
 
 
