@@ -8,11 +8,11 @@ import GridLayout from "@/components/GridLayout/GridLayout.vue";
 import {ref} from "vue";
 
 const layout = ref([
-  {row: 1, column: 1, width: 4, height: 2, id: "0"},
-  {row: 1, column: 5, width: 4, height: 4, id: "1"},
-  {row: 1, column: 9, width: 4, height: 5, id: "2"},
-  {row: 1, column: 13, width: 4, height: 3, id: "5"},
-  {row: 5, column: 5, width: 4, height: 5, id: "6"},
+  {row: 1, column: 1, width: 4, height: 6, id: "0"},
+  {row: 1, column: 6, width: 5, height: 6, id: "1"},
+  {row: 2, column: 5, width: 4, height: 5, id: "2"},
+  {row: 3, column: 5, width: 4, height: 5, id: "3"},
+  {row: 6, column: 5, width: 4, height: 5, id: "4"},
 ])
 </script>
 <style>

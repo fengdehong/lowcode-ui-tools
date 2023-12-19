@@ -4,14 +4,12 @@ import {reactive, ref} from "vue";
 const props = defineProps({
   parentWidth: {type: Number, required: true},
   parentHeight: {type: Number, required: true},
-  padding: {type: Number, default: 10},
+  padding: {type: Number, default: 6},
   id: {type: String, required: true},
   row: {type: Number, required: true},
   column: {type: Number, required: true},
   width: {type: Number, required: true},
   height: {type: Number, required: true},
-  rowGap: {type: Number, required: true},
-  colGap: {type: Number, required: true},
 });
 
 const emits = defineEmits(["update:size", "update:position"]);
@@ -100,7 +98,6 @@ function onDrag(e) {
   let newColumn = dragStartPosition.column + Math.round((e.x - dragStartPosition.x) / (props.parentWidth / 24));
   let newRow = dragStartPosition.row + Math.round((e.y - dragStartPosition.y) / (props.parentHeight / 24));
   emits("update:position", {row: newRow, column: newColumn, id: props.id})
-  console.log("onDrag:", newRow, newColumn);
 }
 
 /**
@@ -115,7 +112,7 @@ function onDragend(e) {
 
 <template>
   <div ref="containerRef" class="resizable-div" :class="{resizing:mouseIsDown,dragging:dragging}"
-       :style="{gridRowStart:row,gridRowEnd:row+height,gridColumnStart:column,gridColumnEnd:column+width}"
+       :style="{gridArea:`${row}/${column}/span ${height}/span ${width}`}"
        @mouseenter="mouseEnter"
        :draggable="true"
        @dragstart="ondragstart"
@@ -126,7 +123,7 @@ function onDragend(e) {
       <div class="resizable-placeholder"
            :style="{width:placeholderSize.width+'px',height:placeholderSize.height+'px'}">
         <div class="placeholder-inner"/>
-        {{ `${row},${column},${width},${height}` }}
+        {{ `${id}::${row},${column},${width},${height}` }}
         <span class="resizable-handle resizable-handle-s" @mousedown="mouseDown('s',$event)"/>
         <span class="resizable-handle resizable-handle-w" @mousedown="mouseDown('w',$event)"/>
         <span class="resizable-handle resizable-handle-e" @mousedown="mouseDown('e',$event)"/>
@@ -139,7 +136,7 @@ function onDragend(e) {
 
 <style scoped>
 .resizable-div {
-  padding: 10px;
+  padding: 6px;
   transition: all .3s ease;
 }
 

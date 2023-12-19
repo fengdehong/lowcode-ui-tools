@@ -2,6 +2,7 @@
 
 import {onMounted, ref} from "vue";
 import GridItem from "@/components/GridLayout/GridItem.vue";
+import {compact} from "./utils.js";
 
 const props = defineProps({
   layout: {type: Array, required: true}
@@ -16,6 +17,8 @@ const parentContainerRef = ref(null);
 onMounted(() => {
   parentWidth.value = parentContainerRef.value.getBoundingClientRect().width;
   parentHeight.value = parentContainerRef.value.getBoundingClientRect().height;
+  let newArrayDetect = compact(props.layout);
+  emits("update:layout", newArrayDetect);
 })
 
 /**
@@ -27,7 +30,8 @@ function onSizeUpdate(e) {
   if (index >= 0) {
     let newArray = [...props.layout]
     newArray[index] = Object.assign({}, newArray[index], e);
-    emits("update:layout", newArray);
+    let newArrayDetect = compact(newArray);
+    emits("update:layout", newArrayDetect);
   }
 }
 
@@ -40,7 +44,8 @@ function onPositionUpdate(e) {
   if (index >= 0) {
     let newArray = [...props.layout]
     newArray[index] = Object.assign({}, newArray[index], e);
-    emits("update:layout", newArray);
+    let newArrayDetect = compact(newArray);
+    emits("update:layout", newArrayDetect);
   }
 }
 
@@ -112,8 +117,6 @@ function onDragover(e) {
               :parent-width="parentWidth"
               :parent-height="parentHeight"
               :id="item.id"
-              :row-gap="20"
-              :col-gap="20"
               :row="item.row"
               :column="item.column"
               :width="item.width"
