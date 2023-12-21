@@ -45,6 +45,6 @@ export default {
 <style scoped>
 .layout-wrap {
   width: 100%;
-  height: 100%;
+  //height: 100%;
 }
 </style>
