@@ -31,8 +31,7 @@
       <LayoutTree :design-group="designGroups"/>
     </div>
     <div class="center-board" @click="designStore.setActiveItem({})">
-      <GridLayout class="main-layout" v-model:layout="designStore.gridLayout"
-                  @onDrop="onLayoutDrop">
+      <GridLayout class="main-layout" v-model:layout="designStore.gridLayout" @onDrop="onLayoutDrop">
         <template #default="{item}">
           <DesignItemAuto v-if="findRenderItem(item.id)" :form="{}" :model="findRenderItem(item.id)"
                           v-model:list="designStore.list"

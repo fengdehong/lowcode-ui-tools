@@ -4,9 +4,7 @@
        @click.stop="designStore.setActiveItem(model)"
        @mouseenter.stop="designStore.setHoverItem(model)"
        @mouseleave.stop="designStore.setHoverItem({})">
-    <LayoutWrap :layout-config="model.layoutConfig" class="editing-component">
-      <Component :is="model.compType" :model="model" :form="form"/>
-    </LayoutWrap>
+    <Component :is="model.compType" :model="model" :form="form"/>
     <div class="drawing-item-controller">
       <ElLink title="复制" icon="DocumentCopy" type="primary" @click.stop="onCopy"/>
       <ElLink title="删除" icon="Delete" type="danger" @click.stop="onDelete"/>
@@ -15,7 +13,6 @@
 </template>
 
 <script setup>
-import LayoutWrap from "./controllers/components/LayoutWrap.vue";
 import {useDesignStore} from "./useDesignStore";
 
 const props = defineProps({
@@ -40,6 +37,8 @@ function onDelete() {
 
 <style scoped>
 .drawing-item {
+  width: 100%;
+  height: 100%;
   --selectedColor: #e6f2ff;
   --selectedBorderColor: var(--el-color-primary);
   --lighterBlue: #409EFF;

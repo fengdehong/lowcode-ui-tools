@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import GridItem from "@/components/GridLayout/GridItem.vue";
 import {compact} from "./utils.js";
 
@@ -41,26 +41,13 @@ function onSizeUpdate(e) {
   }
 }
 
-/**
- *
- * @param e {{row:Number,column:Number,id:String}}
- */
-function onPositionUpdate(e) {
-  let index = props.layout.findIndex(l => l.id === e.id);
-  if (index >= 0) {
-    let newArray = [...props.layout]
-    newArray[index] = Object.assign({}, newArray[index], e);
-    let newArrayDetect = compact(newArray);
-    emits("update:layout", newArrayDetect);
-  }
-}
 
 let dragEnterCounter = 0;
 let droppingItem = ref(null);
+let droppingOffset = reactive({x: 0, y: 0});
 
 function removeDroppingPlaceholder() {
   const index = props.layout.findIndex(l => l.id === "dragging-item");
-  droppingItem.value = null;
   if (index >= 0) {
     const newLayout = [...props.layout];
     newLayout.splice(index, 1);
@@ -80,6 +67,7 @@ function onDrop(e) {
   const item = layout.find(l => l.id === droppingItem.value.id);
   dragEnterCounter = 0;
   removeDroppingPlaceholder();
+  droppingItem.value = null;
   emits("onDrop", layout, item, e);
 }
 
@@ -113,40 +101,58 @@ function onDragenter(e) {
  * @param e {DragEvent}
  */
 function onDragover(e) {
-  // console.log("dragover:", e);
   e.preventDefault(); // Prevent any browser native action
   e.stopPropagation();
-  const gridRect = e.currentTarget.getBoundingClientRect(); // The grid's position in the viewport
-  // Calculate the mouse position relative to the grid
-  const layerX = e.clientX - gridRect.left;
-  const layerY = e.clientY - gridRect.top;
-  let newColumn = Math.round(layerX / (gridRect.width / 24));
-  let newRow = Math.round(layerY / 10);
-  // emits("update:position", {row: newRow, column: newColumn, id: props.id})
-
   if (!droppingItem.value) {
-    console.log("dataTransfer:", e.dataTransfer);
+    Object.assign(droppingOffset, {x: 0, y: 0});
     droppingItem.value = {
       id: "dragging-item",
-      row: newRow,
-      column: newColumn,
+      row: 1,
+      column: 1,
       width: 12,
       height: 30
     };
     const newLayout = [...props.layout, droppingItem.value];
     emits("update:layout", newLayout);
   } else {
-    onPositionUpdate({row: newRow, column: newColumn, id: "dragging-item"})
+    onPositionUpdate(e)
   }
 
 }
 
-function onItemDragStart(id) {
+/**
+ *
+ * @param id {String}
+ * @param e {DragEvent}
+ */
+function onItemDragStart(id, e) {
+  const itemRect = e.currentTarget.getBoundingClientRect()
   droppingItem.value = props.layout.find(l => l.id === id);
+  Object.assign(droppingOffset, {x: e.clientX - itemRect.left, y: e.clientY - itemRect.top});
+  console.log("offset:", droppingOffset);
 }
 
-function onItemDragEnd(id) {
-  droppingItem.value = undefined;
+
+/**
+ *
+ * @param e {DragEvent}
+ */
+function onPositionUpdate(e) {
+  if (!droppingItem.value) return;
+  const gridRect = parentContainerRef.value.getBoundingClientRect(); // The grid's position in the viewport
+  // Calculate the mouse position relative to the grid
+  const layerX = e.clientX - droppingOffset.x - gridRect.left;
+  const layerY = e.clientY - droppingOffset.y - gridRect.top;
+  let newColumn = Math.round(layerX / (gridRect.width / 24));
+  let newRow = Math.round(layerY / 10);
+
+  let index = props.layout.findIndex(l => l.id === droppingItem.value.id);
+  if (index >= 0) {
+    let newArray = [...props.layout]
+    newArray[index] = Object.assign({}, newArray[index], {row: newRow, column: newColumn});
+    let newArrayDetect = compact(newArray);
+    emits("update:layout", newArrayDetect);
+  }
 }
 </script>
 
@@ -157,7 +163,7 @@ function onItemDragEnd(id) {
        @dragenter="onDragenter"
        @dragover="onDragover"
   >
-    <GridItem class="drag-item" v-for="item in layout" :key="item.id"
+    <GridItem class="drag-item" :class="{dragging:droppingItem?.id===item.id}" v-for="item in layout" :key="item.id"
               :parent-width="parentWidth"
               :parent-height="parentHeight"
               :id="item.id"
@@ -166,9 +172,8 @@ function onItemDragEnd(id) {
               :width="item.width"
               :height="item.height"
               @update:size="onSizeUpdate"
-              @update:position="onPositionUpdate"
-              @itemDragStart="onItemDragStart"
-              @itemDragEnd="onItemDragEnd"
+              draggable="true"
+              @dragstart="onItemDragStart(item.id,$event)"
     >
       <slot v-bind:item="item"/>
     </GridItem>
@@ -182,5 +187,10 @@ function onItemDragEnd(id) {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   grid-auto-rows: 10px;
+}
+
+.drag-item.dragging {
+  background: rgba(128, 0, 0, 0.1);
+  border-radius: 8px;
 }
 </style>

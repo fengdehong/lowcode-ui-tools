@@ -53,7 +53,7 @@ export class BaseController {
             backgroundColor: "#FFFFFF",
             textAlign: "center",
             border: null,
-            borderLeft: "1px solid #151414",
+            borderLeft: null,
             borderRight: null,
             borderTop: null,
             borderBottom: null,

@@ -3,6 +3,7 @@ import {computed} from 'vue'
 import draggable from "vuedraggable";
 import DesignItemAuto from "./designItemAuto.vue";
 import {useDesignStore} from "./useDesignStore.js";
+import LayoutWrap from "@/components/FormDesign/controllers/components/LayoutWrap.vue";
 
 const {designStore} = useDesignStore();
 
@@ -73,7 +74,9 @@ function onDelete(item) {
       <el-empty class="draggable-empty" v-if="listAdaptor.length===0" description="请拖入控件"/>
     </template>
     <template #item="{element}">
-      <DesignItemAuto v-model:list="listAdaptor" :model="element" :form="form" @copy="onCopy" @delete="onDelete"/>
+      <LayoutWrap :layout-config="element.layoutConfig" class="editing-component">
+        <DesignItemAuto v-model:list="listAdaptor" :model="element" :form="form" @copy="onCopy" @delete="onDelete"/>
+      </LayoutWrap>
     </template>
 
   </draggable>

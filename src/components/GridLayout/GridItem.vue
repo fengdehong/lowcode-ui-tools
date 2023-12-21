@@ -12,7 +12,7 @@ const props = defineProps({
   height: {type: Number, required: true},
 });
 
-const emits = defineEmits(["update:size", "update:position", "itemDragStart", "itemDragEnd"]);
+const emits = defineEmits(["update:size"]);
 
 /**
  *
@@ -75,53 +75,12 @@ function mouseDown(direct, e) {
   e.preventDefault();
 }
 
-const dragging = ref(false);
-
-
-let dragStartPosition = {row: undefined, column: undefined, x: undefined, y: undefined};
-
-/**
- *
- * @param e {DragEvent}
- */
-function ondragstart(e) {
-  // e.preventDefault();
-  dragStartPosition = {row: props.row, column: props.column, x: e.x, y: e.y};
-  dragging.value = true;
-  emits("itemDragStart", props.id);
-}
-
-/**
- *
- * @param e {DragEvent}
- */
-function onDrag(e) {
-  e.preventDefault();
-  let newColumn = dragStartPosition.column + Math.round((e.x - dragStartPosition.x) / (props.parentWidth / 24));
-  let newRow = dragStartPosition.row + Math.round((e.y - dragStartPosition.y) / 10);
-  emits("update:position", {row: newRow, column: newColumn, id: props.id})
-}
-
-/**
- *
- * @param e {DragEvent}
- */
-function onDragend(e) {
-  // e.preventDefault();
-  dragging.value = false;
-  emits("itemDragEnd", props.id);
-}
 </script>
 
 <template>
-  <div ref="containerRef" class="resizable-div" :class="{resizing:mouseIsDown,dragging:dragging}"
+  <div ref="containerRef" class="resizable-div" :class="{resizing:mouseIsDown}"
        :style="{gridArea:`${row}/${column}/span ${height}/span ${width}`}"
-       @mouseenter="mouseEnter"
-       :draggable="true"
-       @dragstart="ondragstart"
-       @drag="onDrag"
-       @dragend="onDragend"
-  >
+       @mouseenter="mouseEnter">
     <div class="inner">
       <div class="resizable-placeholder"
            :style="{width:placeholderSize.width+'px',height:placeholderSize.height+'px'}">
@@ -243,11 +202,6 @@ function onDragend(e) {
 
 .resizable-div.resizing {
   will-change: width, height;
-}
-
-.resizable-div.dragging {
-  background: rgba(128, 0, 0, 0.1);
-  border-radius: 8px;
 }
 
 
