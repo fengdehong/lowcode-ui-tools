@@ -98,46 +98,60 @@
       </el-collapse-item>
       <el-collapse-item title="边框" name="边框">
         <div class="config-sub-item border">
-          <div class="border-config-sides">
-            <div class="border-config-item left" :class="{selected:borderSelected==='left'}"
-                 @click="borderSelected='left'">
-              <span data-tip="左边框">┣</span>
-            </div>
-            <div class="border-config-item top" :class="{selected:borderSelected==='top'}"
-                 @click="borderSelected='top'">
-              <span data-tip="上边框">┳</span>
-            </div>
-            <div class="border-config-item bottom" :class="{selected:borderSelected==='bottom'}"
-                 @click="borderSelected='bottom'">
-              <span data-tip="下边框">┻</span>
-            </div>
-            <div class="border-config-item right" :class="{selected:borderSelected==='right'}"
-                 @click="borderSelected='right'">
-              <span data-tip="右边框">┫</span>
-            </div>
-            <div class="border-config-item all" :class="{selected:borderSelected==='all'}"
-                 @click="borderSelected='all'">
-              <span data-tip="所有框">╋</span>
-            </div>
+          <BorderSelecter v-model="borderSelected"/>
+          <div class="border-config-inputs">
+            <LayoutBorderConfig v-if="borderSelected==='left'" v-model="config.borderLeft"/>
+            <LayoutBorderConfig v-else-if="borderSelected==='right'" v-model="config.borderRight"/>
+            <LayoutBorderConfig v-else-if="borderSelected==='top'" v-model="config.borderTop"/>
+            <LayoutBorderConfig v-else-if="borderSelected==='bottom'" v-model="config.borderBottom"/>
+            <LayoutBorderConfig v-else-if="borderSelected==='all'" v-model="config.border"/>
           </div>
-          <div class="border-config-inputs"></div>
         </div>
       </el-collapse-item>
+
+      <el-tooltip
+          ref="tooltipRef"
+          :visible="tipVisible"
+          :popper-options="{
+            modifiers: [
+              {
+                name: 'computeStyles',
+                options: {
+                  adaptive: false,
+                  enabled: false,
+                },
+              },
+            ],
+          }"
+          :virtual-ref="tipTargetRef"
+          virtual-triggering
+          popper-class="singleton-tooltip"
+          effect="light">
+        <template #content>
+          <span>{{ tipTargetRef.dataset.tip }}</span>
+        </template>
+      </el-tooltip>
     </el-collapse>
   </div>
 </template>
 
 <script>
 
+import LayoutBorderConfig from "@/components/FormDesign/controllers/components/LayoutBorderConfig.vue";
+import BorderSelecter from "@/components/FormDesign/controllers/components/BorderSelecter.vue";
+
 export default {
   name: "LayoutConfig",
+  components: {BorderSelecter, LayoutBorderConfig},
   props: {
     layoutConfig: {type: Object, required: true}
   },
   emits: ["update:layoutConf"],
   data() {
     return {
-      borderSelected: null,
+      tipTargetRef: null,
+      tipVisible: false,
+      borderSelected: "all",
       fontWeightOptions: [
         {value: 400, label: "常规"},
         {value: 500, label: "加粗"},
@@ -153,6 +167,19 @@ export default {
       set(val) {
         this.$emit("update:layoutConf", {...val});
       }
+    }
+  },
+  mounted() {
+    /**
+     * @type {HTMLDivElement[]}
+     */
+    let tipTargets = this.$el.querySelectorAll("[data-tip]");
+    for (let tipTarget of tipTargets) {
+      tipTarget.onmouseenter = e => {
+        this.tipVisible = true;
+        this.tipTargetRef = e.currentTarget;
+      }
+      tipTarget.onmouseleave = e => this.tipVisible = false;
     }
   }
 }
@@ -182,6 +209,9 @@ export default {
 .config-sub-item {
   display: flex;
   align-items: center;
+  column-gap: 6px;
+  -webkit-column-gap: 6px;
+  -moz-column-gap: 6px;
 }
 
 .config-sub-item + .config-sub-item {
@@ -192,52 +222,6 @@ export default {
   position: relative;
 }
 
-.border-config-sides {
-  position: relative;
-  width: 80px;
-  height: 82px;
-  color: var(--el-text-color);
-}
-
-.border-config-sides .border-config-item {
-  position: absolute;
-  font-size: 16px;
-  line-height: 16px;
-  padding: 4px;
-  border-radius: 2px;
-  --position-width: 28px;
-  cursor: pointer;
-}
-
-.border-config-sides .border-config-item.selected,
-.border-config-sides .border-config-item:hover {
-  background: var(--el-color-info-light-3);
-}
-
-.border-config-sides .border-config-item.left {
-  left: 0;
-  top: var(--position-width);
-}
-
-.border-config-sides .border-config-item.top {
-  top: 0;
-  left: var(--position-width);
-}
-
-.border-config-sides .border-config-item.right {
-  right: 0;
-  top: var(--position-width);
-}
-
-.border-config-sides .border-config-item.bottom {
-  bottom: 0;
-  left: var(--position-width);
-}
-
-.border-config-sides .border-config-item.all {
-  top: var(--position-width);
-  left: var(--position-width);
-}
 </style>
 <style>
 .style-config-collapse {

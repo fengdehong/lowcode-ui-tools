@@ -1,6 +1,6 @@
 <template>
   <div :style="style" class="layout-wrap">
-    <slot name="default"/>
+    <slot/>
   </div>
 </template>
 
@@ -14,8 +14,7 @@ export default {
   computed: {
     style() {
       let layoutConfig = this.layoutConfig;
-
-      return {
+      let style = {
         margin: `${layoutConfig.marginTop}px ${layoutConfig.marginRight}px ${layoutConfig.marginBottom}px ${layoutConfig.marginLeft}px`,
         padding: `${layoutConfig.paddingTop}px ${layoutConfig.paddingRight}px ${layoutConfig.paddingBottom}px ${layoutConfig.paddingLeft}px`,
         color: layoutConfig.color,
@@ -25,7 +24,19 @@ export default {
         lineHeight: layoutConfig.lineHeight + 'px',
         backgroundColor: layoutConfig.backgroundColor,
         textAlign: layoutConfig.textAlign,
+      };
+      if (layoutConfig.border) {
+        style.border = layoutConfig.border;
+      } else {
+        Object.assign(style, {
+          border: layoutConfig.border,
+          borderLeft: layoutConfig.borderLeft,
+          borderRight: layoutConfig.borderRight,
+          borderTop: layoutConfig.borderTop,
+          borderBottom: layoutConfig.borderBottom,
+        })
       }
+      return style;
     }
   }
 }

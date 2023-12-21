@@ -52,6 +52,11 @@ export class BaseController {
             //字体颜色
             backgroundColor: "#FFFFFF",
             textAlign: "center",
+            border: null,
+            borderLeft: "1px solid #151414",
+            borderRight: null,
+            borderTop: null,
+            borderBottom: null,
         };
         this.customConfig = customConfig;
         this.id = getSimpleId();
