@@ -25,6 +25,12 @@ const router = createRouter({
             meta: {title: "报表设计"},
             component: () => import("../views/ResizableTestPage.vue")
         },
+        {
+            path: "/page-design-test",
+            name: "page-design-test",
+            meta: {title: "页面设计"},
+            component: () => import("../views/PageDesignPage.vue")
+        },
     ]
 })
 

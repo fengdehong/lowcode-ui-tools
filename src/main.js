@@ -7,6 +7,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import ControllersRegister from "./components/FormDesign/controllers/Register.js"
 import FormRegister from "./components/FormDesign/form-controllers/Register.js"
 import ChartRegister from "./components/ChartDesign/chart-controllers/Register.js"
+import PageRegister from "./components/PageDesign/page-controllers/Register.js"
 import router from "./router";
 
 const app = createApp(App);
@@ -18,5 +19,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(ControllersRegister);
 app.use(FormRegister);
 app.use(ChartRegister);
+app.use(PageRegister);
 app.use(router);
 app.mount('#app')

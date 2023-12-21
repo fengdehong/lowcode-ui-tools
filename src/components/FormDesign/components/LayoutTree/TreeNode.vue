@@ -37,6 +37,8 @@ const {designStore} = useDesignStore();
   line-height: 24px;
   font-size: 12px;
   display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .tree-node.is-active > .tree-node__label {

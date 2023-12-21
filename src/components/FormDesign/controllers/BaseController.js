@@ -40,7 +40,18 @@ export class BaseController {
             paddingLeft: 0,
             paddingRight: 0,
             paddingTop: 0,
-            paddingBottom: 0
+            paddingBottom: 0,
+            //单位px
+            fontSize: 14,
+            //字重
+            fontWeight: 400,
+            //单位px
+            lineHeight: 48,
+            //字体颜色
+            color: "#000000",
+            //字体颜色
+            backgroundColor: "#FFFFFF",
+            textAlign: "center",
         };
         this.customConfig = customConfig;
         this.id = getSimpleId();

@@ -13,11 +13,19 @@ export default {
   },
   computed: {
     style() {
-      let layoutConfig = this.layoutConfig
-      let style = "";
-      style += `margin: ${layoutConfig.marginTop}px ${layoutConfig.marginRight}px ${layoutConfig.marginBottom}px ${layoutConfig.marginLeft}px;`;
-      style += `padding: ${layoutConfig.paddingTop}px ${layoutConfig.paddingRight}px ${layoutConfig.paddingBottom}px ${layoutConfig.paddingLeft}px;`;
-      return style;
+      let layoutConfig = this.layoutConfig;
+
+      return {
+        margin: `${layoutConfig.marginTop}px ${layoutConfig.marginRight}px ${layoutConfig.marginBottom}px ${layoutConfig.marginLeft}px`,
+        padding: `${layoutConfig.paddingTop}px ${layoutConfig.paddingRight}px ${layoutConfig.paddingBottom}px ${layoutConfig.paddingLeft}px`,
+        color: layoutConfig.color,
+        fontFamily: layoutConfig.fontFamily,
+        fontSize: layoutConfig.fontSize + 'px',
+        fontWeight: layoutConfig.fontWeight,
+        lineHeight: layoutConfig.lineHeight + 'px',
+        backgroundColor: layoutConfig.backgroundColor,
+        textAlign: layoutConfig.textAlign,
+      }
     }
   }
 }

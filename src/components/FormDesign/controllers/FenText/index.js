@@ -18,17 +18,6 @@ export class FenText extends BaseController {
         super(COMPONENT_TYPE, {
             //内容
             content: "文本",
-            //单位px
-            fontSize: 14,
-            //字重
-            fontWeight: 400,
-            //单位px
-            lineHeight: 48,
-            //字体颜色
-            color: "#000000",
-            //字体颜色
-            backgroundColor: "#FFFFFF",
-            textAlign: "center",
             leftIconClass: null,
             rightIconClass: null,
         });

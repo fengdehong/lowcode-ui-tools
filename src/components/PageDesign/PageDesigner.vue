@@ -65,13 +65,13 @@
 <script setup>
 
 import draggable from "vuedraggable";
-import {DesignStore} from "./DesignStore";
-import LayoutTree from "./components/LayoutTree/index.vue";
-import LayoutSlot from "./LayoutSlot.vue";
+import {DesignStore} from "../FormDesign/DesignStore";
+import LayoutTree from "../FormDesign/components/LayoutTree/index.vue";
+import LayoutSlot from "../FormDesign/LayoutSlot.vue";
 
 import "./style/designer.css"
 import {provide} from "vue";
-import FormItemConfig from "./form-controllers/components/FormItemConfig.vue";
+import FormItemConfig from "../FormDesign/form-controllers/components/FormItemConfig.vue";
 import LayoutConfig from "@/components/FormDesign/controllers/components/LayoutConfig.vue";
 
 let tempActiveData;
