@@ -2,8 +2,7 @@
 import {reactive, ref} from "vue";
 
 const props = defineProps({
-  parentWidth: {type: Number, required: true},
-  parentHeight: {type: Number, required: true},
+  gridWidth: {type: Number, required: true},
   padding: {type: Number, default: 6},
   id: {type: String, required: true},
   row: {type: Number, required: true},
@@ -55,7 +54,7 @@ function calcGap() {
   let height = placeholderSize.height + props.padding * 2;
   emits("update:size", {
     id: props.id,
-    width: Math.round(width / (props.parentWidth / 24)),
+    width: Math.round(width / props.gridWidth),
     height: Math.round(height / 10),
   })
 }

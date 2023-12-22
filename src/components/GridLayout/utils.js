@@ -24,26 +24,13 @@ export function compact(layout) {
 
     for (let i = 0, len = sorted.length; i < len; i++) {
         let l = Object.assign({}, sorted[i]);
-
-        // Don't move static elements
-        if (!l.static) {
-            l = compactItem(sorted, compareWith, l);
-
-            // Add to comparison array. We only collide with items before this one.
-            // Statics are already in this array.
-            compareWith.push(l);
-        }
-
-        // Add to output array to make sure they still come out in the right order.
+        l = compactItem(sorted, compareWith, l);
+        compareWith.push(l);
         out[layout.indexOf(sorted[i])] = l;
-
-        // Clear moved flag, if it exists.
-        l.moved = false;
     }
 
     return out;
 }
-
 
 
 /**
@@ -99,7 +86,6 @@ export function compactItem(fullLayout, compareWith, l) {
         l.row--;
     }
 
-
     // Move it down, and keep moving it down if it's colliding.
     let collides;
     // Checking the compactType null value to avoid breaking the layout when overlapping is allowed.
@@ -110,11 +96,8 @@ export function compactItem(fullLayout, compareWith, l) {
     // Ensure that there are no negative positions
     l.row = Math.max(l.row, 1);
     l.column = Math.max(l.column, 1);
-
     return l;
 }
-
-
 
 
 const heightWidth = {row: "height", column: "width"};
@@ -129,22 +112,14 @@ const heightWidth = {row: "height", column: "width"};
 export function resolveCompactionCollision(layout, item, moveToCoord, axis) {
     const sizeProp = heightWidth[axis];
     item[axis] += 1;
-    const itemIndex = layout
-        .map(layoutItem => {
-            return layoutItem.id;
-        })
-        .indexOf(item.id);
+    const itemIndex = layout.findIndex(l => l.id === item.id);
 
     // Go through each item we collide with.
     for (let i = itemIndex + 1; i < layout.length; i++) {
         const otherItem = layout[i];
-        // Ignore static items
-        if (otherItem.static) continue;
-
         // Optimization: we can break early if we know we're past this el
         // We can do this b/c it's a sorted layout
         if (otherItem.row > item.row + item.height) break;
-
         if (collides(item, otherItem)) {
             resolveCompactionCollision(
                 layout,
@@ -154,7 +129,6 @@ export function resolveCompactionCollision(layout, item, moveToCoord, axis) {
             );
         }
     }
-
     item[axis] = moveToCoord;
 }
 

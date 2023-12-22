@@ -9,36 +9,21 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update:layout", "onDrop"]);
+const layoutSize = reactive({width: window.innerWidth, height: window.innerHeight});
 
-const parentWidth = ref(window.innerWidth);
-const parentHeight = ref(window.innerHeight);
 
 const parentContainerRef = ref(null);
+emits("update:layout", compact(props.layout));
 onMounted(() => {
-  parentWidth.value = parentContainerRef.value.getBoundingClientRect().width;
-  parentHeight.value = parentContainerRef.value.getBoundingClientRect().height;
-  let newArrayDetect = compact(props.layout);
-  emits("update:layout", newArrayDetect);
-  const resizeObserver = new ResizeObserver((target) => {
-    parentWidth.value = parentContainerRef.value.getBoundingClientRect().width;
-    parentHeight.value = parentContainerRef.value.getBoundingClientRect().height;
-  });
+  updateContainerSize()
+  const resizeObserver = new ResizeObserver(updateContainerSize);
   resizeObserver.observe(parentContainerRef.value);
   onUnmounted(() => resizeObserver.disconnect());
 })
 
-/**
- *
- * @param e {{width:Number,height:Number,id:String}}
- */
-function onSizeUpdate(e) {
-  let index = props.layout.findIndex(l => l.id === e.id);
-  if (index >= 0) {
-    let newArray = [...props.layout]
-    newArray[index] = Object.assign({}, newArray[index], e);
-    let newArrayDetect = compact(newArray);
-    emits("update:layout", newArrayDetect);
-  }
+function updateContainerSize() {
+  layoutSize.width = parentContainerRef.value.getBoundingClientRect().width;
+  layoutSize.height = parentContainerRef.value.getBoundingClientRect().height;
 }
 
 
@@ -129,7 +114,6 @@ function onItemDragStart(id, e) {
   const itemRect = e.currentTarget.getBoundingClientRect()
   droppingItem.value = props.layout.find(l => l.id === id);
   Object.assign(droppingOffset, {x: e.clientX - itemRect.left, y: e.clientY - itemRect.top});
-  console.log("offset:", droppingOffset);
 }
 
 
@@ -140,18 +124,24 @@ function onItemDragStart(id, e) {
 function onPositionUpdate(e) {
   if (!droppingItem.value) return;
   const gridRect = parentContainerRef.value.getBoundingClientRect(); // The grid's position in the viewport
-  // Calculate the mouse position relative to the grid
   const layerX = e.clientX - droppingOffset.x - gridRect.left;
   const layerY = e.clientY - droppingOffset.y - gridRect.top;
   let newColumn = Math.round(layerX / (gridRect.width / 24));
   let newRow = Math.round(layerY / 10);
+  updateItem(droppingItem.value.id, {row: newRow, column: newColumn});
+}
 
-  let index = props.layout.findIndex(l => l.id === droppingItem.value.id);
+/**
+ *
+ * @param id {String}
+ * @param newInfo {{row?:Number,column?:Number,width?:Number,height?:Number}}
+ */
+function updateItem(id, newInfo) {
+  let index = props.layout.findIndex(l => l.id === id);
   if (index >= 0) {
     let newArray = [...props.layout]
-    newArray[index] = Object.assign({}, newArray[index], {row: newRow, column: newColumn});
-    let newArrayDetect = compact(newArray);
-    emits("update:layout", newArrayDetect);
+    newArray[index] = Object.assign(newArray[index], newInfo);
+    emits("update:layout", compact(newArray));
   }
 }
 </script>
@@ -163,15 +153,15 @@ function onPositionUpdate(e) {
        @dragenter="onDragenter"
        @dragover="onDragover"
   >
-    <GridItem class="drag-item" :class="{dragging:droppingItem?.id===item.id}" v-for="item in layout" :key="item.id"
-              :parent-width="parentWidth"
-              :parent-height="parentHeight"
+    <GridItem class="drag-item" :class="{dragging:droppingItem?.id===item.id}"
+              v-for="item in layout" :key="item.id"
+              :grid-width="layoutSize.width/24"
               :id="item.id"
               :row="item.row"
               :column="item.column"
               :width="item.width"
               :height="item.height"
-              @update:size="onSizeUpdate"
+              @update:size="updateItem(item.id,$event)"
               draggable="true"
               @dragstart="onItemDragStart(item.id,$event)"
     >
