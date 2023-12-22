@@ -1,20 +1,23 @@
 <script setup>
 
-import {defineEmits, defineProps, reactive, ref} from "vue";
+import {defineEmits, defineProps, reactive, ref, watch} from "vue";
 
 const props = defineProps({list: {type: Array, required: true}});
-const emits = defineEmits(["update:list"]);
+const emits = defineEmits(["update:list", "onDrop"]);
+const listTemp = ref([...props.list]);
+watch(props.list, () => {
+  console.log("list change:", props.list);
+  listTemp.value = [...props.list];
+});
 
 let dragEnterCounter = 0;
 let droppingItem = ref(null);
 let droppingOffset = reactive({x: 0, y: 0});
 
 function removeDroppingPlaceholder() {
-  const index = props.list.findIndex(l => l.id === "dragging-item");
+  const index = listTemp.value.findIndex(l => l.id === "dragging-item");
   if (index >= 0) {
-    const newLayout = [...props.list];
-    newLayout.splice(index, 1);
-    emits("update:layout", newLayout);
+    listTemp.value.splice(index, 1);
   }
 }
 
@@ -26,12 +29,11 @@ function removeDroppingPlaceholder() {
 function onDrop(e) {
   e.preventDefault(); // Prevent any browser native action
   e.stopPropagation();
-  const {layout} = props;
-  const item = layout.find(l => l.id === droppingItem.value.id);
+  const index = listTemp.value.indexOf(l => l.id === droppingItem.value.id);
   dragEnterCounter = 0;
   removeDroppingPlaceholder();
   droppingItem.value = null;
-  emits("onDrop", layout, item, e);
+  emits("onDrop", listTemp.value, index, e);
 }
 
 
@@ -70,17 +72,44 @@ function onDragover(e) {
     Object.assign(droppingOffset, {x: 0, y: 0});
     droppingItem.value = {
       id: "dragging-item",
-      row: 1,
-      column: 1,
-      width: 12,
-      height: 30
     };
-    const newLayout = [...props.layout, droppingItem.value];
-    emits("update:layout", newLayout);
-  } else {
-    // onPositionUpdate(e)
+    listTemp.value = [...props.list, droppingItem.value];
   }
+}
 
+/**
+ * @param item {{id:String}}
+ * @param e {DragEvent}
+ */
+function onItemDragOver(item, e) {
+  if (!droppingItem.value) return;
+  if (item.id === droppingItem.value.id) return;
+  e.preventDefault(); // Prevent any browser native action
+  e.stopPropagation();
+  /**
+   * @type {DOMRect}
+   */
+  const rect = e.currentTarget.getBoundingClientRect();
+  const itemIndex = listTemp.value.findIndex(l => l.id === item.id);
+  const droppingIndex = listTemp.value.findIndex(l => l.id === droppingItem.value.id);
+
+  if (e.clientY < (rect.top + rect.height / 2)) {
+    if (droppingIndex === itemIndex - 1) return;
+    const listCopy = [...listTemp.value];
+    listCopy.splice(droppingIndex, 1);
+    listCopy.splice(itemIndex, 0, droppingItem.value);
+    listTemp.value = listCopy;
+  } else if (e.clientY > (rect.bottom - rect.height / 2)) {
+    if (droppingIndex === itemIndex + 1) return;
+    const listCopy = [...listTemp.value];
+    listCopy.splice(droppingIndex, 1);
+    listCopy.splice(itemIndex, 0, droppingItem.value);
+    listTemp.value = listCopy;
+  }
+}
+
+function onItemDragStart(item, e) {
+  droppingItem.value = item;
 }
 </script>
 
@@ -91,8 +120,17 @@ function onDragover(e) {
        @dragenter="onDragenter"
        @dragover="onDragover"
   >
-    <div class="item-wrap" v-for="item in list" :key="item.id" draggable="true"
-         @dragstart="onItemDragStart(item.id,$event)"></div>
+    <div v-if="listTemp.length" v-for="item in listTemp" :key="item.id"
+         class="item-wrap" :class="{dragging:droppingItem?.id===item.id}"
+         draggable="true"
+         @dragstart="onItemDragStart(item,$event)"
+         @dragover="onItemDragOver(item,$event)">
+      <div v-if="item.id==='dragging-item'" class="dragging-handle"></div>
+      <slot v-else :item="item"/>
+    </div>
+    <div v-else class="placeholder">
+      拖拽组件到当前位置
+    </div>
   </div>
 </template>
 
@@ -100,21 +138,33 @@ function onDragover(e) {
 
 </style>
 <style>
-.drag-wrapper {
+.layout-container {
   position: relative;
-//height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.drag-wrapper > .draggable-empty {
+.placeholder {
+  box-sizing: border-box;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-//height: 100%;
+  color: #5e6d82;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px dashed #8c939d;
 }
 
-.drag-wrapper.is-null > .sortable-ghost {
+.dragging-handle {
+  height: 100px;
   width: 100%;
-//height: 100%; border: 1px dashed #337dff; text-align: center; vertical-align: center;
+  background: #8c939d;
+}
+
+.item-wrap.dragging {
+  opacity: .3;
+  background: #8c939d;
 }
 </style>

@@ -153,7 +153,7 @@ function updateItem(id, newInfo) {
        @dragenter="onDragenter"
        @dragover="onDragover"
   >
-    <GridItem class="drag-item" :class="{dragging:droppingItem?.id===item.id}"
+    <GridItem v-if="layout.length" class="drag-item" :class="{dragging:droppingItem?.id===item.id}"
               v-for="item in layout" :key="item.id"
               :grid-width="layoutSize.width/24"
               :id="item.id"
@@ -167,6 +167,9 @@ function updateItem(id, newInfo) {
     >
       <slot v-bind:item="item"/>
     </GridItem>
+    <div v-else class="placeholder">
+      拖拽组件到当前位置
+    </div>
   </div>
 </template>
 
@@ -177,10 +180,23 @@ function updateItem(id, newInfo) {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   grid-auto-rows: 10px;
+  position: relative;
 }
 
 .drag-item.dragging {
   background: rgba(128, 0, 0, 0.1);
   border-radius: 8px;
+}
+
+.placeholder {
+  position: absolute;
+  color: #5e6d82;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px dashed #8c939d;
 }
 </style>

@@ -127,7 +127,6 @@ function onDelete() {
 
 .active-from-item {
   & > .el-form-item {
-    background: var(--selectedColor);
     border-radius: 6px;
   }
 

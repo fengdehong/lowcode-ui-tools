@@ -8,7 +8,7 @@ export class DesignStore {
     activeItem = {};
     hoverItem = {};
     controllers = [];
-    customData = {};
+    draggingItem = undefined
 
     setControllers(controllers) {
         this.controllers = controllers;
